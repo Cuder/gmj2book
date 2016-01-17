@@ -1,0 +1,14 @@
+.fieldset {
+	width:400px;
+	margin-top:10px;
+	padding-top:0px;
+}
+.legend {
+	font-weight:bold;
+}
+.dropdown {
+	width:100%;
+}
+.textbox {
+	width:100%;
+}
