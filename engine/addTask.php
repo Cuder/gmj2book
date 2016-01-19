@@ -7,18 +7,8 @@ $blogPosts = getPostsTable($blogId,$_POST['site']);
 if ($blogPosts == "noaccess") exit($error[0].$textCommon[1]." <b>".$_POST['blogName']."</b> ".$textErrors[7].$error[1]);
 if ($blogPosts == "na") exit($error[0].naErrorMessage($_POST['site']).$error[1]);
 
-// Inserting a new task into the DB
-$sth = $db_conn->prepare("INSERT INTO gmj_tasks (site,author_id,coauthor_name,real_name,real_surname,images) VALUES (:site,:author_id,:coauthor_name,:real_name,:real_surname,:images)");
-$sth->bindParam(':site', $_POST['site']);
-$sth->bindParam(':author_id', $blogId);
-$sth->bindParam(':coauthor_name', $coAuthorName);
-$sth->bindParam(':real_name', $realName);
-$sth->bindParam(':real_surname', $realSurname);
-$sth->bindParam(':images', $images);
-$sth->execute();
-
-// Selecting ID of the newly added task
-$taskId = $db_conn->lastInsertId();
+// Inserting a new task into the DB, $taskId will be ID of the newly added task
+$taskId = insert2DB('tasks',array($_POST['site'],$blogId,$coAuthorName,$realName,$realSurname,$images));
 
 if ($coAuthorName != "") {
 	// Trying to get coauthor's ID from the DB

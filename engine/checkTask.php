@@ -13,11 +13,7 @@ if ($blogId == "") {
 	if ($blogId == "na") exit($error[0].naErrorMessage($_POST['site']).$error[1]);
 	if ($blogId == 0) exit($error[0].$textCommon[1]." <b>".$_POST['blogName']."</b> ".$textErrors[6].$error[1]);
 	// Adding blog ID to the DB
-	$sth = $db_conn->prepare("INSERT INTO gmj_blogs (site,id,name) VALUES (:site,:id,:name)");
-	$sth->bindParam(':site', $_POST['site']);
-	$sth->bindParam(':id', $blogId);
-	$sth->bindParam(':name', $blogName);
-	$sth->execute();
+	insert2DB('blogs',array($_POST['site'],$blogId,$blogName));
 	$taskId = "";
 	$taskStatus = 0;
 } else {

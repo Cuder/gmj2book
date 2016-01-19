@@ -16,10 +16,7 @@ $sth->execute();
 $emailCount = $sth->fetchColumn();
 
 if ($emailCount == 0) {
-	$sth = $db_conn->prepare("INSERT INTO gmj_emails (id,email) VALUES (:id,:email)");
-	$sth->bindParam(':id', $taskId);
-	$sth->bindParam(':email', $_POST['email']);
-	$sth->execute();
+	insert2DB('emails',array($taskId,$_POST['email']));
 } else {
 	// The task is already on for this email
 	exit($error[0].$textCommon[1]." ".$_POST['blogName'].$textErrors[12].$textStatus[4].$error[3]);

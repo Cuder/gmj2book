@@ -173,11 +173,7 @@ function insertBlogPosts($blogPosts,$blogId,$site,$coauthor=0) {
 					$db_upd->execute(array($postAuthorName,$site,$postAuthorId));
 				} else {
 					// Inserting a new DB record
-					$sth = $db_conn->prepare("INSERT INTO gmj_blogs (site,id,name) VALUES (:site,:id,:name)");
-					$sth->bindParam(':site',$site);
-					$sth->bindParam(':id',$postAuthorId);
-					$sth->bindParam(':name',$postAuthorName);
-					$sth->execute();
+					insert2DB('blogs',array($site,$postAuthorId,$postAuthorName));
 				}
 			}
 			if ($postAuthorId == $blogId || $postAuthorId == $coauthor) {
@@ -208,16 +204,8 @@ function insertBlogPosts($blogPosts,$blogId,$site,$coauthor=0) {
 				$post = preg_replace('#(<br />)+#i', '<br />', $post);
 				$pattern = "~(<a href='[^']*' rel='nofollow' target='_blank'>)([^<]*)(</a>)~";
 				$post = preg_replace($pattern, '$2', $post);
-				// Insert post into the DB
-				$sth = $db_conn->prepare("INSERT INTO gmj_posts (site,id,title,post,time,author,image) VALUES (:site,:id,:title,:post,FROM_UNIXTIME(:time),:author,:image)");
-				$sth->bindParam(':site',$site);
-				$sth->bindParam(':id',$postId);
-				$sth->bindParam(':title',$postTitle);
-				$sth->bindParam(':post',$post);
-				$sth->bindParam(':time',$postTime);
-				$sth->bindParam(':author',$blogId);
-				$sth->bindParam(':image',$ext);
-				$sth->execute();
+				// Insert post into the DB		
+				insert2DB('posts',array($site,$postId,$postTitle,$post,$postTime,$blogId,$ext));	
 			}
 		} else {
 			break;
