@@ -168,9 +168,7 @@ function insertBlogPosts($blogPosts,$blogId,$site,$coauthor=0) {
 			if (!$postAuthorNameDB || $postAuthorName != $postAuthorNameDB) {
 				if ($postAuthorNameDB) {
 					// Updating DB record with correct case
-					$sql = "UPDATE gmj_blogs SET name=? WHERE site=? AND id=?";
-					$db_upd = $db_conn->prepare($sql);
-					$db_upd->execute(array($postAuthorName,$site,$postAuthorId));
+					$db_conn->exec("UPDATE gmj_blogs SET name='".$postAuthorName."' WHERE id='".$postAuthorId."' AND site='".$site."'");
 				} else {
 					// Inserting a new DB record
 					insert2DB('blogs',array($site,$postAuthorId,$postAuthorName));

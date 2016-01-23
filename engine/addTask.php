@@ -22,8 +22,7 @@ if ($coAuthorName != "") {
 if ($coAuthorName == "" || ($coAuthorName != "" && $coauthorId != "")) {
 	// Inserting topics ($blogPosts) from the first (0) page
 	insertBlogPosts($blogPosts,$blogId,$_POST['site'],$coauthorId);
-	$sth = $db_conn->prepare("UPDATE gmj_tasks SET pages_parsed=pages_parsed+1 WHERE id='".$taskId."'");
-	$sth->execute();
+	$db_conn->exec("UPDATE gmj_tasks SET pages_parsed=pages_parsed+1 WHERE id='".$taskId."'");
 }
 
 // Notifying me about a new task
