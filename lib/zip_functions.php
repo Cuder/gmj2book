@@ -3,7 +3,7 @@
 if (preg_match("/zip_functions.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
 
 function createZIP($taskId,$blogName) {
-	global $db_conn,$rootdir,$start_time;
+	global $db_conn,$rootdir;
 	$fpath = $rootdir."/books/".$taskId."/".$blogName.".fb2";
 	if (file_exists($fpath)) {
 		updateTaskStatus($taskId,7);
@@ -12,8 +12,7 @@ function createZIP($taskId,$blogName) {
 		$zip->addFile($fpath,$blogName.".fb2");
 		$zip->close();
 		unlink($fpath);
-		$busy = round(microtime(true),4)-$start_time;
-		$db_conn->exec("UPDATE gmj_tasks SET status=8,busy='".$busy."' WHERE id='".$taskId."'");
+		updateTaskStatus($taskId,8);
 	} else {
 		// File with FB2 book is absent for some reason
 		// Notification!

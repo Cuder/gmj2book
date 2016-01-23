@@ -22,12 +22,9 @@ if ($task) {
 		$db_conn->exec("UPDATE gmj_tasks SET time=time+INTERVAL 1 YEAR WHERE id='".$task[0]["id"]."'");
 		exit();
 	}
-	if ($task[0]["busy"] == 0.0000) {
+	if ($task[0]["start_time"] == 0) {
 		// Beginning to count time
-		$start_time = round(microtime(true),4);
-	} else {
-		// Continue counting time
-		$start_time = $task[0]["busy"];
+		$db_conn->exec("UPDATE gmj_tasks SET start_time=NOW() WHERE id='".$task[0]["id"]."'");
 	}
 	if ($task[0]["status"] == 0 || $task[0]["status"] == 1) {
 		require_once $rootdir."/lib/simple_html_dom.php";
@@ -68,8 +65,13 @@ if ($task) {
 	if ($task[0]["status"] == 8) {
 		// The book is ready, notifying
 		// ...
-		// End of time
-		$busy = round(microtime(true),4)-$start_time;
+
+		// Inserting task processing time
+		$sth = $db_conn->prepare("SELECT start_time FROM gmj_tasks WHERE id='".$task[0]["id"]."'");
+		$sth->execute();
+		$startTime = new DateTime($sth->fetchColumn());
+		$now = new DateTime('NOW');
+		$busy = $now->getTimestamp()-$startTime->getTimestamp();
 		$db_conn->exec("UPDATE gmj_tasks SET busy='".$busy."' WHERE id='".$task[0]["id"]."'");
 	}
 }

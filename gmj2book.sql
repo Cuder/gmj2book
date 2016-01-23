@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Янв 17 2016 г., 21:09
+-- Время создания: Янв 23 2016 г., 17:06
 -- Версия сервера: 5.5.44-0+deb8u1
 -- Версия PHP: 5.6.13-0+deb8u1
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- База данных: `gmj2book`
+-- База данных: `test`
 --
 
 -- --------------------------------------------------------
@@ -75,14 +75,15 @@ CREATE TABLE IF NOT EXISTS `gmj_tasks` (
   `coauthor_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `pages_parsed` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `posts` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `posts_count` smallint(5) unsigned NOT NULL DEFAULT '0',
   `images_count` smallint(5) unsigned NOT NULL DEFAULT '0',
   `real_name` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `real_surname` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `images` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `start_time` datetime NOT NULL,
   `busy` float(10,4) unsigned NOT NULL DEFAULT '0.0000',
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -113,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `pma__column_info` (
   `mimetype` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `transformation` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
   `transformation_options` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Column information for phpMyAdmin';
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Column information for phpMyAdmin';
 
 -- --------------------------------------------------------
 
@@ -454,7 +455,7 @@ ALTER TABLE `pma__users`
 -- AUTO_INCREMENT для таблицы `gmj_tasks`
 --
 ALTER TABLE `gmj_tasks`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT для таблицы `pma__bookmark`
 --
@@ -464,7 +465,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT для таблицы `pma__column_info`
 --
 ALTER TABLE `pma__column_info`
-MODIFY `id` int(5) unsigned NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(5) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT для таблицы `pma__history`
 --

@@ -213,7 +213,7 @@ function insertBlogPosts($blogPosts,$blogId,$site,$coauthor=0) {
 
 // Parse blog
 function blog2DB($task) {
-	global $db_conn,$start_time;
+	global $db_conn;
 	foreach ($task as $parameters) {
 		// Getting coauthor's ID
 		if ($parameters["coauthor_name"]) {
@@ -256,8 +256,7 @@ function blog2DB($task) {
 			if ($blogPosts) {
 				// Inserting posts in the DB
 				insertBlogPosts($blogPosts,$parameters["author_id"],$parameters["site"],$coauthorId);
-				$busy = round(microtime(true),4)-$start_time;
-				$db_conn->exec("UPDATE gmj_tasks SET pages_parsed=pages_parsed+1, busy='".$busy."' WHERE id='".$parameters["id"]."'");
+				$db_conn->exec("UPDATE gmj_tasks SET pages_parsed=pages_parsed+1 WHERE id='".$parameters["id"]."'");
 			} else {
 				updateTaskStatus($parameters["id"],2);
 				break;

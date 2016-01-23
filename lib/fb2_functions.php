@@ -113,7 +113,7 @@ function writeAnnotation($fb2,$site,$authorId,$authorName,$realName='',$realSurn
 }
 
 function continueWritingFB2($task) {
-	global $db_conn,$rootdir,$start_time;
+	global $db_conn,$rootdir;
 	foreach ($task as $parameters) {
 		$fpath = $rootdir."/books/".$parameters["id"]."/".$parameters["name"].".fb2";
 		if (!file_exists($fpath)) {
@@ -273,8 +273,6 @@ function continueWritingFB2($task) {
 					}
 					// Updating counters
 					//$db_conn->exec("UPDATE gmj_posts SET post_in_book='1' WHERE id='".$post["id"]."' AND site='".$parameters["site"]."'");
-					//$busy = round(microtime(true),4)-$start_time;
-					//$db_conn->exec("UPDATE gmj_tasks SET busy='".$busy."' WHERE id='".$parameters["id"]."'");
 				}
 				$old_month = "";
 			}
@@ -291,7 +289,7 @@ function continueWritingFB2($task) {
 }
 
 function blog2FB2($task) {
-	global $db_conn,$rootdir,$start_time;
+	global $db_conn,$rootdir;
 	
 	foreach ($task as $parameters) {
 		
@@ -406,8 +404,6 @@ function blog2FB2($task) {
 						$old_month = $month;
 					}
 					$db_conn->exec("UPDATE gmj_posts SET post_in_book='1' WHERE id='".$post["id"]."' AND site='".$parameters["site"]."'");
-					$busy = round(microtime(true),4)-$start_time;
-					$db_conn->exec("UPDATE gmj_tasks SET busy='".$busy."' WHERE id='".$parameters["id"]."'");
 				}
 			}
 		}
@@ -419,12 +415,17 @@ function blog2FB2($task) {
 		}
 		// Flushing buffer
 		$fb2->flush();
-	updateTaskStatus($parameters["id"],4);
+	
+	// Updating posts counter and status
+	$sth = $db_conn->prepare("SELECT COUNT(*) FROM gmj_posts WHERE author='".$parameters["author_id"]."' AND site='".$parameters["site"]."' AND post_in_book='1'");
+	$sth->execute();
+	$postsCount = $sth->fetchColumn();
+	$db_conn->exec("UPDATE gmj_tasks SET posts_count='".$postsCount."', status='4' WHERE id='".$parameters["id"]."'");
 	}
 }
 
 function embedImages($authorId,$authorName,$site,$taskId) {
-	global $db_conn,$rootdir,$start_time;
+	global $db_conn,$rootdir;
 	
 	updateTaskStatus($taskId,5);
 	
@@ -457,11 +458,14 @@ function embedImages($authorId,$authorName,$site,$taskId) {
 		$binaries = $binary->asXML()."\n";
 		file_put_contents($fpath, $binaries, FILE_APPEND);
 		$db_conn->exec("UPDATE gmj_posts SET image_in_book='1' WHERE id='".$image["id"]."' AND site='".$site."'");
-		$busy = round(microtime(true),4)-$start_time;
-		$db_conn->exec("UPDATE gmj_tasks SET busy='".$busy."' WHERE id='".$taskId."'");
 	}
 	file_put_contents($fpath, "</FictionBook>", FILE_APPEND);
-	updateTaskStatus($taskId,6);
+	
+	// Updating images counter and status
+	$sth = $db_conn->prepare("SELECT COUNT(*) FROM gmj_posts WHERE author='".$authorId."' AND site='".$site."' AND image_in_book='1'");
+	$sth->execute();
+	$imagesCount = $sth->fetchColumn();
+	$db_conn->exec("UPDATE gmj_tasks SET images_count='".$imagesCount."', status='6' WHERE id='".$taskId."'");
 }
 
 ?>

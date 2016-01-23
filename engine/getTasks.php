@@ -11,7 +11,7 @@ $sth = $db_conn->prepare("
 			gmj_tasks.coauthor_name,
 			gmj_tasks.status,
 			gmj_tasks.pages_parsed,
-			gmj_tasks.posts,
+			gmj_tasks.posts_count,
 			gmj_tasks.images_count,
 			gmj_tasks.real_name,
 			gmj_tasks.real_surname,
@@ -69,7 +69,7 @@ foreach ($tasks as $task) {
 		echo $task["pages_parsed"];
 		echo "</td>";
 		echo "<td>";
-		echo $task["posts"];
+		echo $task["posts_count"];
 		echo "</td>";
 		echo "<td>";
 		if ($task["images"] == 0) { echo 0; } else { echo $task["images_count"]; }
