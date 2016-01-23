@@ -6,7 +6,7 @@ function createZIP($taskId,$blogName) {
 	global $db_conn,$rootdir,$start_time;
 	$fpath = $rootdir."/books/".$taskId."/".$blogName.".fb2";
 	if (file_exists($fpath)) {
-		$db_conn->exec("UPDATE gmj_tasks SET status=7 WHERE id='".$taskId."'");
+		updateTaskStatus($taskId,7);
 		$zip = new ZipArchive();
 		$zip->open($fpath.".zip",ZipArchive::CREATE);
 		$zip->addFile($fpath,$blogName.".fb2");

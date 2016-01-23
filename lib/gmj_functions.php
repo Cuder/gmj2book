@@ -226,7 +226,7 @@ function blog2DB($task) {
 				$coauthorId = getUserId($parameters["coauthor_name"],$parameters["site"]);
 				if ($coauthorId == "na") {
 					// Site is unavailable, temporarily stopping processing
-					$db_conn->exec("UPDATE gmj_tasks SET status=0 WHERE id='".$parameters["id"]."'");
+					updateTaskStatus($parameters["id"],0);
 					return exit();
 				}
 				// Coauthor not found
@@ -237,7 +237,7 @@ function blog2DB($task) {
 		} else {
 			$coauthorId = 0;
 		}
-		$db_conn->exec("UPDATE gmj_tasks SET status=1 WHERE id='".$parameters["id"]."'");
+		updateTaskStatus($parameters["id"],1);
 		// Processing blog's pages one by one
 		for ($i=$parameters["pages_parsed"]; ; $i++) {
 			$blogPosts = getPostsTable($parameters["author_id"],$parameters["site"],$i);
@@ -251,7 +251,7 @@ function blog2DB($task) {
 			}
 			if ($blogPosts == "na") {
 				// Site is unavailable, temporarily stopping processing
-				$db_conn->exec("UPDATE gmj_tasks SET status=0 WHERE id='".$parameters["id"]."'");
+				updateTaskStatus($parameters["id"],0);
 				return exit();
 				break;
 			}
@@ -261,7 +261,7 @@ function blog2DB($task) {
 				$busy = round(microtime(true),4)-$start_time;
 				$db_conn->exec("UPDATE gmj_tasks SET pages_parsed=pages_parsed+1, busy='".$busy."' WHERE id='".$parameters["id"]."'");
 			} else {
-				$db_conn->exec("UPDATE gmj_tasks SET status=2 WHERE id='".$parameters["id"]."'");
+				updateTaskStatus($parameters["id"],2);
 				break;
 			}
 		}

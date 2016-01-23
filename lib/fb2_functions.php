@@ -286,7 +286,7 @@ function continueWritingFB2($task) {
 		$fp = fopen($fpathNew, 'w');
 		fwrite($fp,$xml_string);
 		// Update status
-		//$db_conn->exec("UPDATE gmj_tasks SET status=4 WHERE id='".$parameters["id"]."'");
+		// updateTaskStatus($parameters["id"],4);
 	}
 }
 
@@ -295,7 +295,7 @@ function blog2FB2($task) {
 	
 	foreach ($task as $parameters) {
 		
-		$db_conn->exec("UPDATE gmj_tasks SET status=3 WHERE id='".$parameters["id"]."'");
+		updateTaskStatus($parameters["id"],3);
 		
 		// Setting path for FB2 files
 		// Permissions for this directory must be set to 777
@@ -419,14 +419,14 @@ function blog2FB2($task) {
 		}
 		// Flushing buffer
 		$fb2->flush();
-	$db_conn->exec("UPDATE gmj_tasks SET status=4 WHERE id='".$parameters["id"]."'");
+	updateTaskStatus($parameters["id"],4);
 	}
 }
 
 function embedImages($authorId,$authorName,$site,$taskId) {
 	global $db_conn,$rootdir,$start_time;
 	
-	$db_conn->exec("UPDATE gmj_tasks SET status=5 WHERE id='".$taskId."'");
+	updateTaskStatus($taskId,5);
 	
 	$fpath = $rootdir."/books/".$taskId."/".$authorName.".fb2";
 	$xml = "<a></a>";
@@ -461,7 +461,7 @@ function embedImages($authorId,$authorName,$site,$taskId) {
 		$db_conn->exec("UPDATE gmj_tasks SET busy='".$busy."' WHERE id='".$taskId."'");
 	}
 	file_put_contents($fpath, "</FictionBook>", FILE_APPEND);
-	$db_conn->exec("UPDATE gmj_tasks SET status=6 WHERE id='".$taskId."'");
+	updateTaskStatus($taskId,6);
 }
 
 ?>
