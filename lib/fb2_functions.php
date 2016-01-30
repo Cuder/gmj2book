@@ -2,7 +2,7 @@
 // forbid to open this file directly from the browser
 if (preg_match("/fb2_functions.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
 
-function printMonth($month) {
+function printMonth($month,$reverse=false) {
 	$months = array (
 		0 => "Январь",
 		1 => "Февраль",
@@ -17,8 +17,11 @@ function printMonth($month) {
 		10 => "Ноябрь",
 		11 => "Декабрь"
 	);
-	$i = $month-1;
-	return $months[$i];
+	if ($reverse == false) {
+		return $months[$month-1];
+	} else {
+		return array_search($month,$months)+1;
+	}
 }
 
 function rus_date() {
@@ -142,9 +145,15 @@ function continueWritingFB2($task) {
 		// Deleting broken sections with a month and year following the last inserted post
 		if ($nextMonth || $nextYear) {
 			// The post is the last post of the month/year, deleting the broken section of the next month/year
-			if ($nextMonth) $lastPostYear->removeChild($nextMonth);
-			if ($nextYear) $commonSection->removeChild($nextYear);
-			//$postCount = $postCount+1;
+			if ($nextMonth) {
+				$old_month = $lastPostMonth->getElementsByTagName('title')->item(0)->nodeValue;
+				$old_month = printMonth($old_month,true);
+				$lastPostYear->removeChild($nextMonth);
+			}
+			if ($nextYear) {
+				$old_year = $lastPostYear->getElementsByTagName('title')->item(0)->nodeValue;
+				$commonSection->removeChild($nextYear);
+			}
 		} else {
 			$sth = $db_conn->prepare("SELECT id FROM gmj_posts WHERE author='".$parameters["author_id"]."' AND site='".$parameters["site"]."' ORDER BY id ASC LIMIT ".$postCount.",1");
 			$sth->execute();
@@ -159,17 +168,23 @@ function continueWritingFB2($task) {
 						$sibling = $nextSibling;
 					} while ($sibling);
 				}
-				//$postCount = $postCount-1;
-				$lastPostNew = $dom->getElementsByTagName('subtitle')->item($postCount);
-				$lastPostId = $lastPostNew->getAttribute('id');
+				// Determining the last successfully written post
+				$postCount = $postCount-1;
+				$lastPostReal = $dom->getElementsByTagName('subtitle')->item($postCount);
+				$lastPostId = $lastPostReal->getAttribute('id');
 			} else {
 				$lastPostId = $lastPostIdDB;
 			}
 			// Removing the last <subtitle> section
 			$lastPostMonth->removeChild($lastPost);
 		}
+		$db_conn->exec("UPDATE gmj_posts SET post_in_book='0' WHERE id>'".$lastPostId."' AND post_in_book='1' AND author='".$parameters["author_id"]."' AND site='".$parameters["site"]."'");
+		
+		if (!isset($old_month)) $old_month = "";
+		if (!isset($old_year)) $old_year = "";
+
 		// Selecting the first and the last year among all posts not yet written in file
-		$sth = $db_conn->prepare("SELECT YEAR(min(time)),YEAR(max(time)) FROM gmj_posts WHERE site='".$parameters["site"]."' AND author='".$parameters["author_id"]."' AND post_in_book='0'");
+		$sth = $db_conn->prepare("SELECT YEAR(min(time)),YEAR(max(time)) FROM gmj_posts WHERE site='".$parameters["site"]."' AND author='".$parameters["author_id"]."' AND id>'".$lastPostId."'");
 		$sth->execute();
 		$years = $sth->fetchAll(PDO::FETCH_ASSOC);
 		
@@ -177,13 +192,12 @@ function continueWritingFB2($task) {
 		if ($parameters["images"] == 1) { $images = ",image"; } else { $images = ""; }
 		
 		// Selecting posts from the DB
-		$old_year = "";
 		for ($i=$years[0]["YEAR(min(time))"];$i<=$years[0]["YEAR(max(time))"];$i++) {
 			// Gettings posts for a specific year $i
-			$sth = $db_conn->prepare("SELECT id,title,post,time".$images." FROM gmj_posts WHERE site='".$parameters["site"]."' AND author='".$parameters["author_id"]."' AND LEFT(time,4)=".$i." AND post_in_book='0' ORDER BY time ASC");
+			$sth = $db_conn->prepare("SELECT id,title,post,time".$images." FROM gmj_posts WHERE site='".$parameters["site"]."' AND author='".$parameters["author_id"]."' AND LEFT(time,4)=".$i." AND id>'".$lastPostId."' ORDER BY id ASC");
 			$sth->execute();
 			$posts = $sth->fetchAll(PDO::FETCH_ASSOC);
-			$old_month = "";
+
 			if ($posts) {
 				
 				// Year processing
@@ -220,8 +234,8 @@ function continueWritingFB2($task) {
 						$rawXML->appendXML('<p>'.printMonth($month).'</p>');
 						$node->appendChild($rawXML);
 						$lastPostMonth->appendChild($node);
+						$old_month = $month;
 					}
-					$old_month = $month;
 					
 					// Post processing
 					// Deleting last <br/> tag
@@ -263,7 +277,7 @@ function continueWritingFB2($task) {
 					if ($parameters["images"] == 1 && $post["image"] != 0) {
 						if ($post["image"] == 2) $ext = "jpg";
 						if ($post["image"] == 3) $ext = "png";
-						if ($ext) {
+						if (isset($ext)) {
 							$node = $dom->createElement("image");
 							$attribute = $dom->createAttribute('xlink:href');
 							$attribute->value = '#image'.$post["id"].'.'.$ext;
@@ -271,20 +285,22 @@ function continueWritingFB2($task) {
 							$lastPostMonth->appendChild($node);		
 						}
 					}
-					// Updating counters
-					//$db_conn->exec("UPDATE gmj_posts SET post_in_book='1' WHERE id='".$post["id"]."' AND site='".$parameters["site"]."'");
+					// Saving changes in XML
+					$xml_string = $dom->saveXML();
+					$xml_string = preg_replace('/^  |\G  /m', "\t", $xml_string);
+					$fp = fopen($fpath, 'w');
+					fwrite($fp,$xml_string);
+					$db_conn->exec("UPDATE gmj_posts SET post_in_book='1' WHERE id='".$post["id"]."' AND site='".$parameters["site"]."'");
 				}
-				$old_month = "";
+				$lastPostId = $post["id"];
 			}
+			$old_month = 99;
 		}
-		// Save changes in XML
-		$xml_string = $dom->saveXML();
-		$xml_string = preg_replace('/^  |\G  /m', "\t", $xml_string);
-		$fpathNew = $rootdir."/books/1/test.fb2";
-		$fp = fopen($fpathNew, 'w');
-		fwrite($fp,$xml_string);
-		// Update status
-		// updateTaskStatus($parameters["id"],4);
+		// Updating posts counter and status
+		$sth = $db_conn->prepare("SELECT COUNT(*) FROM gmj_posts WHERE author='".$parameters["author_id"]."' AND site='".$parameters["site"]."' AND post_in_book='1'");
+		$sth->execute();
+		$postsCount = $sth->fetchColumn();
+		$db_conn->exec("UPDATE gmj_tasks SET posts_count='".$postsCount."', status='4' WHERE id='".$parameters["id"]."'");
 	}
 }
 
