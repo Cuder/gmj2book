@@ -302,6 +302,7 @@ function continueWritingFB2($task) {
 		$postsCount = $sth->fetchColumn();
 		$db_conn->exec("UPDATE gmj_tasks SET posts_count='".$postsCount."', status='4' WHERE id='".$parameters["id"]."'");
 	}
+	fclose($fp);
 }
 
 function blog2FB2($task) {
@@ -340,7 +341,7 @@ function blog2FB2($task) {
 		for ($i=$years[0]["YEAR(min(time))"];$i<=$years[0]["YEAR(max(time))"];$i++) {
 		
 			// Gettings posts for a specific year $i
-			$sth = $db_conn->prepare("SELECT id,title,post,time".$images." FROM gmj_posts WHERE site='".$parameters["site"]."' AND author='".$parameters["author_id"]."' AND LEFT(time,4)=".$i." ORDER BY time ASC");
+			$sth = $db_conn->prepare("SELECT id,title,post,time".$images." FROM gmj_posts WHERE site='".$parameters["site"]."' AND author='".$parameters["author_id"]."' AND LEFT(time,4)=".$i." ORDER BY id ASC");
 			$sth->execute();
 			$posts = $sth->fetchAll(PDO::FETCH_ASSOC);
 			
@@ -396,7 +397,7 @@ function blog2FB2($task) {
 						if ($parameters["images"] == 1 && $post["image"] != 0) {
 							if ($post["image"] == 2) $ext = "jpg";
 							if ($post["image"] == 3) $ext = "png";
-							if ($ext) {
+							if (isset($ext)) {
 								$fb2->startElement('image');
 									$fb2->writeAttribute('xlink:href','#image'.$post["id"].'.'.$ext);
 								$fb2->endElement();				
