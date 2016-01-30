@@ -449,7 +449,7 @@ function embedImages($authorId,$authorName,$site,$taskId) {
 	$xml = "<a></a>";
 	$fb2 = new SimpleXMLElement($xml);
 
-	$sth = $db_conn->prepare("SELECT id,image FROM gmj_posts WHERE author='".$authorId."' AND site='".$site."' AND image<>0 AND image_in_book='0' GROUP BY id ASC");
+	$sth = $db_conn->prepare("SELECT id,image FROM gmj_posts WHERE author='".$authorId."' AND site='".$site."' AND (image='2' OR image='3') AND image_in_book='0' GROUP BY id ASC");
 	$sth->execute();
 	$images = $sth->fetchAll(PDO::FETCH_ASSOC);
 	
@@ -457,16 +457,14 @@ function embedImages($authorId,$authorName,$site,$taskId) {
 		if ($image["image"] == 2) {
 			$imageType = "image/jpeg";
 			$ext = "jpg";
-		} elseif ($image["image"] == 3) {
+		}
+		if ($image["image"] == 3) {
 			$ext = "png";
 			$imageType = "image/".$ext;
-		} else {
-			break;
 		}
-		
 		$path = getURL($site)."/Blog/Attachment.ashx?aid=".$image["id"];
 		$base64 = wordwrap(base64_encode(file_get_contents($path)),120,"\n",TRUE);
-		
+
 		// Inserting binary images
 		$binary = $fb2->addChild("binary",$base64);
 		$binary->addAttribute('id','image'.$image["id"].'.'.$ext);
