@@ -178,6 +178,7 @@ function insertBlogPosts($blogPosts,$blogId,$site,$coauthor=0) {
 				// Post title
 				$postTitle = $postTable->find('th[align=left]',0)->innertext;
 				$postTitle = trim($postTitle);
+				if (preg_match('/[а-яА-ЯA-Za-z0-9]/',$postTitle) == 0 && $postTitle != "") $postTitle = "";
 				// Post time
 				$postTime = $postTable->find('th[align=right]',0)->innertext;
 				$postTime = gmjTime($postTime);

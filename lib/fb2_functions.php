@@ -263,7 +263,7 @@ function continueWritingFB2($task) {
 						//$messagePart = preg_replace($pattern, $replacement, $messagePart);
 						if ($first) {
 							$first = false;
-							$messagePart = "<strong>".$post["title"]."</strong> ".$messagePart;
+							if ($post["title"]) $messagePart = "<strong>".$post["title"]."</strong> ".$messagePart;
 						}
 						$node = $dom->createElement("p");
 						$rawXML = $dom->createDocumentFragment();
