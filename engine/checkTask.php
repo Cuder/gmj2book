@@ -29,11 +29,53 @@ if ($blogId == "") {
 	$sth->execute();
 	$taskInfo = $sth->fetch();
 	if ($taskInfo != "") {
-		if ($taskInfo[1] == 4) {
+		if ($taskInfo[1] == 8) {
 			// The task exists and the book is ready
-			// Check if this book is up-to-date
-			// ...
-			exit();
+			// Checking if this book is up-to-date
+			$sth = $db_conn->prepare("SELECT id FROM gmj_posts WHERE author='".$blogId."' AND site='".$_POST['site']."' AND post_in_book='1' ORDER BY id DESC LIMIT 1");
+			$sth->execute();
+			$lastPostInBook = $sth->fetchColumn();
+			$blogPosts = getPostsTable($blogId,$_POST['site']);
+			if ($blogPosts == "noaccess" || $blogPosts == "na") {
+				// Blog's owner blocked access to his/her blog or the site is unavailable
+				$giveBook = true;
+			} else {
+				// Scanning the first page for new posts
+				for ($i=0; $i<10; $i++) {
+					$postTable = $blogPosts->find('table[class=BlogT]',$i);
+					if ($postTable) {
+						$postAuthorData = $postTable->find('td[align=left] a',0);
+						// Post author name
+						$postAuthorName = $postAuthorData->innertext;
+						// Post author ID
+						$postAuthorId = $postAuthorData->href;
+						$postAuthorId = getID($postAuthorId,'bid');
+						// Checking if this post belongs to the blog's author/co-author
+						if ($postAuthorId == $blogId || mb_strtolower($postAuthorName,'UTF-8') == $coAuthorName) {
+							$postId = $postTable->find('td[align=right] a',0)->href;
+							$postId = getID($postId,'rid');
+							$giveBook = ($postId == $lastPostInBook)?true:false;
+							$fileName = $postAuthorName;
+							break;
+						}
+					} else {
+						// The first page contains no posts that belong to the blog's author/co-author
+						$giveBook = true;
+						break;
+					}
+				}
+			}
+			if ($giveBook == true) {
+				if (!isset($fileName)) {
+					$sth = $db_conn->prepare("SELECT name FROM gmj_blogs WHERE id='".$blogId."' AND site='".$_POST['site']."'");
+					$sth->execute();
+					$fileName = $sth->fetchColumn();
+				}
+				exit($textStatus[15]." <a href='/books/".$taskInfo[0]."/".$fileName.".fb2.zip'>".$textStatus[12]."</a>.");
+			} else {
+				// The book needs to be updated. Updating status of the task
+				// ...
+			}
 		} else {
 			$taskId = $taskInfo[0];
 			$taskStatus = $taskInfo[1];
