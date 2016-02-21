@@ -1,6 +1,6 @@
 <?php
 // forbid to open this file directly from the browser
-if (preg_match("/fb2_functions.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/fb2_functions.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 function printMonth($month,$reverse=false) {
 	$months = array (

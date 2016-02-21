@@ -1,6 +1,6 @@
 <?php
 // forbid to open this file directly from the browser
-if (preg_match("/gmj_functions.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/gmj_functions.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 // Function to get ID of a user by its name
 function getUserId($username,$site) {

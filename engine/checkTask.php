@@ -1,6 +1,6 @@
 <?php
 // Forbid to open this file directly from browser
-if (preg_match("/checkTask.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/checkTask.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 // Trying to get blog ID via the DB
 $sth = $db_conn->prepare("SELECT id FROM gmj_blogs WHERE lower(name)='".$blogName."' AND site='".$_POST['site']."'");

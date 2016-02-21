@@ -1,6 +1,6 @@
 <?php
 // forbid to open this file directly from the browser
-if (preg_match("/text_strings.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/text_strings.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 // text on submit form
 $textSubmitForm = array (

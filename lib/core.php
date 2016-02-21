@@ -1,6 +1,6 @@
 <?php
 // Forbid to open this file directly from browser
-if (preg_match("/core.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/core.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 // Debug level
 ini_set('display_errors', 1); 

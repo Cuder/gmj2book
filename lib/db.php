@@ -1,6 +1,6 @@
 <?php
 // Forbid to open this file directly from browser
-if (preg_match("/db.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/db.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 // Open connection to the DB
 try {

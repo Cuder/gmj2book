@@ -1,6 +1,6 @@
 <?php
 // Forbid to open this file directly from browser
-if (preg_match("/addTask.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/addTask.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 // Checking access to blog
 $blogPosts = getPostsTable($blogId,$_POST['site']);

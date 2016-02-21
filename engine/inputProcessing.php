@@ -1,6 +1,6 @@
 <?php
 // Forbid to open this file directly from browser
-if (preg_match("/inputProcessing.php/i", $_SERVER['PHP_SELF'])) header("Location: index.php");
+if (preg_match("/inputProcessing.php/i", $_SERVER['PHP_SELF'])) header("Location: ../index.php");
 
 // Checking if all mandatory POST fields are defined and correct
 if ($_POST['blogName'] == "" && $_POST['email'] == "") exit($error[0].$textErrors[2].$error[1]);
