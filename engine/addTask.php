@@ -28,4 +28,3 @@ if ($coAuthorName == "" || ($coAuthorName != "" && $coauthorId != "")) {
 // Notifying me about a new task
 $message = "Some guy with IP ".$_SERVER['REMOTE_ADDR']." has just added a new task for blog ".$_POST['blogName']." (email ".$_POST['email'].").";
 mail('me@nikitakovin.ru','New task for GMJ book',$message);
-?>

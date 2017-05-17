@@ -45,5 +45,3 @@ if (!isset($submit)) {
 } else {
 	fallback("index.php");
 }
-
-?>

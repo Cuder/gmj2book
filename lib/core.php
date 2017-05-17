@@ -66,4 +66,3 @@ function errHandle($errNo, $errStr, $errFile, $errLine) {
     }
 }
 set_error_handler('errHandle');
-?>

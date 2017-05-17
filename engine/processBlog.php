@@ -75,4 +75,3 @@ if ($task) {
 		$db_conn->exec("UPDATE gmj_tasks SET busy='".$busy."' WHERE id='".$task[0]["id"]."'");
 	}
 }
-?>

@@ -4,9 +4,9 @@ if (preg_match("/config.php/i", $_SERVER['PHP_SELF'])) header("Location: index.p
 
 // Database authentication data
 $db_host = 'localhost';
-$db_name = 'test';
+$db_name = 'gmj';
 $db_user = 'root';
-$db_pass = '';
+$db_pass = '443912';
 
 // Maximum tasks of all kinds in the DB
 $max_tasks = 5;
@@ -40,4 +40,3 @@ $publicBlogs1 = array(
 	"tech.support",
 	"we"
 );
-?>

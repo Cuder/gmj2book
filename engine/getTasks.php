@@ -79,4 +79,3 @@ foreach ($tasks as $task) {
 		echo "</td>";
 	echo "</tr>";
 }
-?>

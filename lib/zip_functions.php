@@ -21,5 +21,3 @@ function createZIP($taskId,$blogName) {
 		return exit();
 	}
 }
-
-?>

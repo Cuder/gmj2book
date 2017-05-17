@@ -21,4 +21,3 @@ if ($emailCount == 0) {
 	// The task is already on for this email
 	exit($error[0].$textCommon[1]." ".$_POST['blogName'].$textErrors[12].$textStatus[4].$error[3]);
 }
-?>

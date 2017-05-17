@@ -85,4 +85,3 @@ if ($blogId == "") {
 		$taskStatus = 0;
 	}
 }
-?>

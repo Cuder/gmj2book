@@ -47,6 +47,7 @@ function insert2DB($table,$data) {
 	}
 	$sth->execute();
 	if ($table == "tasks") return $db_conn->lastInsertId();
+	return null;
 }
 
 // Function of updating statuses of tasks
@@ -54,4 +55,3 @@ function updateTaskStatus($taskID,$status) {
 	global $db_conn;
 	$db_conn->exec("UPDATE gmj_tasks SET status='".$status."' WHERE id='".$taskID."'");
 }
-?>

@@ -46,4 +46,3 @@ if (isset($_POST['images']) && $_POST['images'] == 'include') {
 } else {
 	$images = 0;
 }
-?>

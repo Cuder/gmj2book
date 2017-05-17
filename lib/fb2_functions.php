@@ -482,5 +482,3 @@ function embedImages($authorId,$authorName,$site,$taskId) {
 	$imagesCount = $sth->fetchColumn();
 	$db_conn->exec("UPDATE gmj_tasks SET images_count='".$imagesCount."', status='6' WHERE id='".$taskId."'");
 }
-
-?>
