@@ -46,13 +46,13 @@ if ($task) {
 	}
 	if ($task[0]["status"] == 3) {
 		// Continue making FB2
-		continueWritingFB2($task);
+        require_once $rootdir."/engine/continueWritingFB2.php";
 		$task[0]["status"] = 4;
 	}
 	if ($task[0]["status"] == 4 || $task[0]["status"] == 5) {
 		if ($task[0]["images"] == 1) {
 			// Embedding images in FB2
-			embedImages($task[0]["author_id"],$task[0]["name"],$task[0]["site"],$task[0]["id"]);
+            require_once $rootdir."/engine/embedImages.php";
 		}
 		$task[0]["status"] = 6;
 	}
