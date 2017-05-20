@@ -87,7 +87,6 @@ function getPostsTable($blogId,$site,$blogPage = 0) {
 		} else {
 			$topicsTable = $html->find('table[class=BlogDG]',0);
 			if ($topicsTable) return $topicsTable;
-			return null;
 		}
 	} else {
 		$error = "na";
